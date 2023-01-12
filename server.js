@@ -1,7 +1,8 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const consoleTable = require('console.table');
-require(dotenv).config();
+const PromptUI = require('inquirer/lib/ui/prompt');
+// require(dotenv).config();
 
 const db = mysql.createConnection(
     {
@@ -12,7 +13,6 @@ const db = mysql.createConnection(
     },
     console.log('Connected to database.')
 )
-
 //main menu options
 const mainMenu = () => {
     inquirer.prompt([
@@ -20,12 +20,12 @@ const mainMenu = () => {
             name: 'mainMenu',
             type: 'list',
             message: 'What would you like to do?',
-            choices: ['View all departments','View all roles','View all employees','Add a department','Add a role','Add an employee','Update an employee role']
+            choices: ['View all departments','View all roles','View all employees','Add a department','Add a role','Add an employee','Update an employee role','Exit']
         }
     ]).then(selected => {
         switch(selected.mainMenu){
             case 'View all departments':
-                viewDeparments();
+                viewDepartments();
                 break;
             case 'View all roles':
                 viewRoles();
@@ -45,20 +45,50 @@ const mainMenu = () => {
             case 'Update an employee role':
                 updateEmployee();
                 break;
+            case 'Exit':
+                console.log('All done!');
+                // PromptUI.close()
+                break;
+            default: 
+                console.log('default');
         }
     })
 }
 
 //view options
 const viewDepartments = () => {
-
+    const sql = `SELECT * FROM department`;
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error(err);
+        } else {
+            console.table(result);
+            mainMenu();
+        } 
+    })
 }
 
 const viewRoles = () => {
-    
+    const sql = `SELECT * FROM role`;
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error(err);
+        } else {
+            console.table(result);
+            mainMenu();
+        }
+    })
 }
 const viewEmployees = () => {
-
+    const sql = `SELECT * FROM employee`;
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error(err);
+        } else {
+            console.table(result);
+            mainMenu();
+        }
+    })
 }
 
 //add info
@@ -77,7 +107,18 @@ const addDepartment = () => {
                 }
             }
         }
-    ])//.then add to db.query
+    ]).then(input => {
+        const sql = `INSERT INTO department (name) VALUES (?)`;
+        const params = [input.deptName]
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log('Successfully added department name.')
+            } mainMenu();
+        })
+    }) //add to db.query
     //.then return to mainMenu
 }
 
@@ -167,3 +208,5 @@ const updateEmployee = () => {
     ])
     //.then return to mainMenu
 }
+
+mainMenu();
