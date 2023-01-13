@@ -115,11 +115,10 @@ const addDepartment = () => {
             if (err) {
                 console.error(err);
             } else {
-                console.log('Successfully added department name.')
+                console.log(`Successfully added department: ${input.deptName}.`)
             } mainMenu();
         })
-    }) //add to db.query
-    //.then return to mainMenu
+    })
 }
 
 const addRole = () => {
@@ -152,10 +151,31 @@ const addRole = () => {
         },
         {
             //department [choices]
+            name: 'deptId',
+            type: 'number',
+            message: 'Which department does this role belong?',
+            validate: numberInput => {
+                if(numberInput){
+                    return true;
+                } else {
+                    console.log('Please enter the department id.');
+                    return false;
+                }
+            }
         }
 
-    ])//.then add to db.query
-    //.then return to mainMenu
+    ]).then(input => {
+        const sql = `INSERT INTO role (title, salary, department_id) VALUES (?)`;
+        const params = [input.roleName, input.salary, input.deptId]
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log(`Successfully added new role: ${input.roleName}.`);
+            } mainMenu();
+        })
+    })
 }
 
 const addEmployee = () => {
@@ -187,14 +207,46 @@ const addEmployee = () => {
             }
         },
         {
-            //role [choices]
+            //role
+            name: 'roleId',
+            type: 'number',
+            message: "What is the role id?",
+            validate: numberInput => {
+                if(numberInput){
+                    return true;
+                } else {
+                    console.log('Please enter the role id.');
+                    return false;
+                }
+            }
         },
         {
-            //manager [choices]
+            //manager
+            name: 'managerId',
+            type: 'number',
+            message: "What is the manager id?",
+            validate: numberInput => {
+                if(numbereInput){
+                    return true;
+                } else {
+                    console.log('Please enter the mangager id.');
+                    return false;
+                }
+            }
         }
 
-    ])//.then add to db.query
-    //.then return to mainMenu
+    ]).then(input => {
+        const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id VALUES (?)`;
+        const params = [input.employeeFirstName, input.employeeLastName, input.roleId, input.managerId]
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log(`Successfully added new employee: ${input.employeeFirstName} ${input.employeeLastName}.`);
+            } mainMenu();
+        })
+    })
 }
 
 const updateEmployee = () => {
