@@ -7,7 +7,6 @@ This is a command line application that accepts user input to generate a company
 - [Installation](#installation)
 - [Usage](#usage)
 - [Visual Presentation](#visual-presentation)
-- [Tests](#tests)
 - [Links](#links)
 
 ## Installation
