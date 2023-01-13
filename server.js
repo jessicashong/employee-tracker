@@ -226,7 +226,7 @@ const addEmployee = () => {
             type: 'number',
             message: "What is the manager id?",
             validate: numberInput => {
-                if(numbereInput){
+                if(numberInput){
                     return true;
                 } else {
                     console.log('Please enter the mangager id.');
@@ -256,8 +256,32 @@ const updateEmployee = () => {
             type: 'list',
             message: 'Which employee information would you like to update?',
             //choices: []
+        },
+        {
+            name: 'updatedRole',
+            type: 'number',
+            message: 'What is the new role id?',
+            validate: numberInput => {
+                if(numberInput){
+                    return true;
+                } else {
+                    console.log('Please enter the new role id.');
+                    return false;
+                }
+            }
         }
-    ])
+    ]).then(input => {
+        const sql = `UPDATE employee SET first_name`;
+        const params = [input.employeeFirstName, input.employeeLastName, input.roleId, input.managerId]
+
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log(`Successfully added new employee: ${input.employeeFirstName} ${input.employeeLastName}.`);
+            } mainMenu();
+        })
+    })
     //.then return to mainMenu
 }
 
